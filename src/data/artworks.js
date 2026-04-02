@@ -5,6 +5,9 @@ export const artworks = [
     price: 120,
     image: "/images/artwork-1.avif",
     status: "available",
+    description: "Original acrylic painting inspired by autumn landscapes in Quebec.",
+    size: "12x16 inches",
+    medium: "Acrylic on canvas",
   },
   {
     id: "winter-light",
@@ -12,6 +15,9 @@ export const artworks = [
     price: 90,
     image: "/images/artwork-2.avif",
     status: "sold",
+    description: "A calm winter composition with soft natural tones.",
+    size: "10x12 inches",
+    medium: "Acrylic on canvas",
   },
   {
     id: "forest-silence",
@@ -19,5 +25,8 @@ export const artworks = [
     price: 150,
     image: "/images/artwork-3.avif",
     status: "available",
+    description: "A quiet forest scene with layered greens and soft light.",
+    size: "16x20 inches",
+    medium: "Acrylic on canvas",
   },
 ];
