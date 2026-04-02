@@ -10,7 +10,7 @@ export default function HeroSection() {
           </p>
 
           <div className="space-y-4">
-            <h1 className="max-w-xl text-4xl font-bold leading-tight md:text-5xl">
+            <h1 className="max-w-xl text-4xl leading-tight md:text-5xl">
               Original paintings inspired by nature, place, and atmosphere
             </h1>
 
