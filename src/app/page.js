@@ -1,8 +1,19 @@
+import FeaturedArtworks from "@/components/home/FeaturedArtworks";
+import PageContainer from "@/components/layout/PageContainer";
+
 export default function Home() {
   return (
     <div>
-      <h1>Eligrey Gallery Clone</h1>
-      <p>Pass 1 - Static version</p>
+      <PageContainer>
+        <section className="py-8">
+          <h1 className="mb-4 text-4xl font-bold">Eligrey Gallery Clone</h1>
+          <p className="text-lg text-gray-600">
+            Original paintings and commissions
+          </p>
+        </section>
+      </PageContainer>
+
+      <FeaturedArtworks />
     </div>
   );
 }

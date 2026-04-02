@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function ProductCard({ id, title, price, image, status }) {
   return (
-    <div className="overflow-hidden rounded-xl border bg-white shadow-sm">
+    <div className="overflow-hidden rounded-l border bg-white shadow-sm">
       <div className="aspect-square w-full overflow-hidden bg-gray-100">
         <img
           src={image}
