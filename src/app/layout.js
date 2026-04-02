@@ -20,7 +20,7 @@ export default function RootLayout({ children }) {
       <body className={`${fahkwang.variable} min-h-screen bg-white text-black`}>
         <div className="flex min-h-screen flex-col">
           <Header />
-          <main className="flex-1">{children}</main>
+          <main className="flex-1 pb-16 bg-[#e8e6e6]">{children}</main>
           <Footer />
         </div>
       </body>
