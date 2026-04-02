@@ -1,20 +1,15 @@
 import Link from "next/link";
+import Navbar from "./Navbar";
 
 export default function Header() {
   return (
-    <header className="border-b">
-      <div className="mx-auto max-w-6xl px-4 py-4 flex justify-between">
-        <Link href="/" className="font-bold">
-          Eligrey Gallery
+    <header className="sticky top-0 z-50 border-b bg-white/95 backdrop-blur">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
+        <Link href="/" className="text-xl font-semibold tracking-wide">
+          Eli Grey Gallery
         </Link>
 
-        <nav className="space-x-4">
-          <Link href="/gallery">Gallery</Link>
-          <Link href="/about">About</Link>
-          <Link href="/commissions">Commissions</Link>
-          <Link href="/contact">Contact</Link>
-          <Link href="/cart">Cart</Link>
-        </nav>
+        <Navbar />
       </div>
     </header>
   );
