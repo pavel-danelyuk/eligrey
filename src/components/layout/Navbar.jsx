@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useCart } from "@/context/CartContext";
 
 const links = [
   { href: "/", label: "Home" },
@@ -9,11 +10,11 @@ const links = [
   { href: "/about", label: "About" },
   { href: "/commissions", label: "Commissions" },
   { href: "/contact", label: "Contact" },
-  { href: "/cart", label: "Cart" },
 ];
 
 export default function Navbar() {
   const pathname = usePathname();
+  const { cartCount } = useCart();
 
   return (
     <nav className="flex flex-wrap items-center justify-end gap-3 md:gap-6">
@@ -26,7 +27,7 @@ export default function Navbar() {
             href={link.href}
             className={`text-sm font-medium transition ${
               isActive
-                ? "text-black border-b border-black pb-1"
+                ? "text-black underline underline-offset-4"
                 : "text-gray-700 hover:text-black"
             }`}
           >
@@ -34,6 +35,17 @@ export default function Navbar() {
           </Link>
         );
       })}
+
+      <Link
+        href="/cart"
+        className={`text-sm font-medium transition ${
+          pathname === "/cart"
+            ? "text-black underline underline-offset-4"
+            : "text-gray-700 hover:text-black"
+        }`}
+      >
+        Cart{cartCount > 0 ? ` (${cartCount})` : ""}
+      </Link>
     </nav>
   );
 }

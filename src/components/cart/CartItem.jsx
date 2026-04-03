@@ -1,4 +1,10 @@
-export default function CartItem({ title, price, image, quantity }) {
+"use client";
+
+import { useCart } from "@/context/CartContext";
+
+export default function CartItem({ id, title, price, image, quantity }) {
+  const { removeFromCart } = useCart();
+
   return (
     <div className="flex gap-4 rounded-xl border p-4">
       <div className="h-24 w-24 overflow-hidden rounded-md bg-gray-100">
@@ -18,7 +24,8 @@ export default function CartItem({ title, price, image, quantity }) {
 
         <button
           type="button"
-          className="rounded-md border px-3 py-2 text-sm"
+          onClick={() => removeFromCart(id)}
+          className="cursor-pointer rounded-md border px-3 py-2 text-sm transition hover:bg-gray-100"
         >
           Remove
         </button>

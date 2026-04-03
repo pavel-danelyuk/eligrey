@@ -1,37 +1,53 @@
 import Link from "next/link";
 
 export default function ProductCard({ id, title, price, image, status }) {
-  return (
-    <div className="overflow-hidden rounded-l border bg-white shadow-sm">
-      <div className="aspect-square w-full overflow-hidden bg-gray-100">
-        <img
-          src={image}
-          alt={title}
-          className="h-full w-full object-cover"
-        />
-      </div>
+  const sold = status === "sold";
 
-      <div className="space-y-3 p-4">
-        <div>
-          <h3 className="text-lg font-semibold">{title}</h3>
+  return (
+    <article className="group overflow-hidden rounded-2xl border border-black/5 bg-white/80 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
+      <Link href={`/product/${id}`} className="block">
+        <div className="relative aspect-square w-full overflow-hidden bg-gray-100">
+          <img
+            src={image}
+            alt={title}
+            className={`h-full w-full object-cover transition duration-500 group-hover:scale-105 ${
+              sold ? "opacity-80" : ""
+            }`}
+          />
+
+          <div className="pointer-events-none absolute left-3 top-3">
+            {sold ? (
+              <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-red-600 shadow-sm backdrop-blur">
+                Sold
+              </span>
+            ) : (
+              <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-green-700 shadow-sm backdrop-blur">
+                Available
+              </span>
+            )}
+          </div>
+        </div>
+      </Link>
+
+      <div className="space-y-4 p-5">
+        <div className="min-h-[72px] space-y-1">
+          <h3 className="text-lg font-semibold leading-snug">{title}</h3>
           <p className="text-sm text-gray-600">${price}</p>
         </div>
 
-        <p className="text-sm">
-          {status === "sold" ? (
-            <span className="font-medium text-red-600">Sold</span>
-          ) : (
-            <span className="font-medium text-green-700">Available</span>
-          )}
-        </p>
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-xs uppercase tracking-[0.16em] text-gray-500">
+            Original Artwork
+          </p>
 
-        <Link
-          href="/product"
-          className="inline-block rounded-md border px-4 py-2 text-sm font-medium transition hover:bg-gray-100"
-        >
-          View Details
-        </Link>
+          <Link
+            href={`/product/${id}`}
+            className="cursor-pointer rounded-md border border-black px-4 py-2 text-sm font-medium transition hover:bg-black hover:text-white"
+          >
+            View
+          </Link>
+        </div>
       </div>
-    </div>
+    </article>
   );
 }

@@ -3,7 +3,7 @@ import { artworks } from "@/data/artworks";
 import Link from "next/link";
 
 export default function FeaturedArtworks() {
-  const featured = artworks.slice(0, 3);
+  const featured = artworks.filter((artwork) => artwork.featured);
 
   return (
     <section className="mx-auto max-w-6xl px-4 py-16">

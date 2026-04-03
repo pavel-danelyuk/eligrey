@@ -1,3 +1,5 @@
+import NewsletterForm from "@/components/forms/NewsletterForm";
+
 export default function NewsletterSection() {
   return (
     <section className="border-t bg-gray-50">
@@ -17,20 +19,7 @@ export default function NewsletterSection() {
           </p>
         </div>
 
-        <form className="mx-auto mt-8 flex max-w-md flex-col gap-3 sm:flex-row">
-          <input
-            type="email"
-            placeholder="Enter your email"
-            className="flex-1 rounded-md border px-4 py-3 text-sm outline-none"
-          />
-
-          <button
-            type="button"
-            className="rounded-md bg-black px-6 py-3 text-sm font-medium text-white transition hover:opacity-90"
-          >
-            Subscribe
-          </button>
-        </form>
+        <NewsletterForm />
 
         <p className="mt-4 text-xs text-gray-500">
           No spam. Only updates about new artwork.
