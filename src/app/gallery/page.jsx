@@ -1,12 +1,27 @@
 import PageContainer from "@/components/layout/PageContainer";
-import ProductGrid from "@/components/gallery/ProductGrid";
+import GalleryClient from "@/components/gallery/GalleryClient";
 import { artworks } from "@/data/artworks";
 
 export default function GalleryPage() {
   return (
     <PageContainer>
-      <h1 className="mb-8 text-3xl font-bold">Gallery</h1>
-      <ProductGrid artworks={artworks} />
+      <section className="space-y-6">
+        <div className="max-w-3xl space-y-3">
+          <p className="text-sm uppercase tracking-[0.18em] text-gray-500">
+            Gallery
+          </p>
+
+          <h1 className="text-4xl font-bold leading-[1.05] md:text-5xl">
+            Explore original works
+          </h1>
+
+          <p className="text-base leading-7 text-gray-600">
+            Browse available and sold pieces by collection, year, and price.
+          </p>
+        </div>
+
+        <GalleryClient artworks={artworks} />
+      </section>
     </PageContainer>
   );
 }

@@ -1,6 +1,13 @@
 import Link from "next/link";
 
-export default function ProductCard({ id, title, price, image, status }) {
+export default function ProductCard({
+  id,
+  title,
+  price,
+  image,
+  status,
+  collection,
+}) {
   const sold = status === "sold";
 
   return (
@@ -10,12 +17,14 @@ export default function ProductCard({ id, title, price, image, status }) {
           <img
             src={image}
             alt={title}
-            className={`h-full w-full object-cover transition duration-500 group-hover:scale-105 ${
-              sold ? "opacity-80" : ""
-            }`}
+            className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
           />
 
-          <div className="pointer-events-none absolute left-3 top-3">
+          <div className="pointer-events-none absolute left-3 top-3 flex flex-col gap-2">
+            <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-black shadow-sm backdrop-blur">
+              {collection}
+            </span>
+
             {sold ? (
               <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-red-600 shadow-sm backdrop-blur">
                 Sold

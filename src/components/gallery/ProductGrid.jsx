@@ -11,6 +11,7 @@ export default function ProductGrid({ artworks }) {
           price={artwork.price}
           image={artwork.image}
           status={artwork.status}
+          collection={artwork.collection}
         />
       ))}
     </div>
