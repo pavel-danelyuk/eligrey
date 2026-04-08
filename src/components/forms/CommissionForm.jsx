@@ -6,6 +6,7 @@ export default function CommissionForm() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    company: "",
     preferredSize: "",
     budget: "",
     projectIdea: "",
@@ -174,6 +175,17 @@ export default function CommissionForm() {
           {errors.email && (
             <p className="mt-1 text-sm text-red-600">{errors.email}</p>
           )}
+        </div>
+
+        <div className="absolute left-[-9999px]">
+          <label>Company</label>
+          <input
+            type="text"
+            name="company"
+            value={formData.company}
+            onChange={handleChange}
+            autoComplete="off"
+          />
         </div>
 
         <div>
