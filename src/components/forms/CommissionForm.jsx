@@ -12,6 +12,7 @@ export default function CommissionForm() {
   });
 
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
 
@@ -55,21 +56,40 @@ export default function CommissionForm() {
       ...prev,
       [name]: "",
     }));
+
+    setSubmitError("");
+    setSubmitted(false);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const newErrors = validate();
     setErrors(newErrors);
+    setSubmitError("");
+    setSubmitted(false);
 
     if (Object.keys(newErrors).length > 0) return;
 
-    setIsSubmitting(true);
+    try {
+      setIsSubmitting(true);
 
-    setTimeout(() => {
+      const response = await fetch("/api/commissions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setSubmitError(data.error || "Something went wrong.");
+        return;
+      }
+
       setSubmitted(true);
-      setIsSubmitting(false);
 
       setFormData({
         name: "",
@@ -79,15 +99,17 @@ export default function CommissionForm() {
         projectIdea: "",
       });
 
-      setTimeout(() => {
-        setSubmitted(false);
-      }, 2500);
-    }, 800);
+      setErrors({});
+    } catch (error) {
+      setSubmitError("Unable to submit the form. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <div>
-      <form onSubmit={handleSubmit} className="space-y-4 rounded-xl border p-6">
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="mb-1 block text-sm font-medium">Name</label>
           <input
@@ -200,6 +222,10 @@ export default function CommissionForm() {
         <p className="mt-4 text-sm text-green-700">
           Your commission request has been submitted.
         </p>
+      )}
+
+      {submitError && (
+        <p className="mt-4 text-sm text-red-600">{submitError}</p>
       )}
     </div>
   );
