@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useMemo, useState } from "react";
 import { useCart } from "@/context/CartContext";
 import { useRouter } from "next/navigation";
 
@@ -8,6 +9,7 @@ export default function ProductDetails({
   title,
   price,
   image,
+  images,
   status,
   description,
   size,
@@ -18,9 +20,22 @@ export default function ProductDetails({
   const { addToCart, isInCart } = useCart();
   const router = useRouter();
 
+  const imageList = useMemo(() => {
+    if (Array.isArray(images) && images.length > 0) return images;
+    if (image) return [image];
+    return [];
+  }, [images, image]);
+
+  const [selectedImage, setSelectedImage] = useState(imageList[0] || "");
+
+  useEffect(() => {
+    setSelectedImage(imageList[0] || "");
+  }, [imageList]);
+
   const sold = status === "sold";
   const alreadyInCart = isInCart(id);
   const disableAddToCart = sold || alreadyInCart;
+  const primaryImage = imageList[0] || image || "";
 
   let buttonText = "Add to Cart";
 
@@ -38,7 +53,7 @@ export default function ProductDetails({
         id,
         title,
         price,
-        image,
+        image: primaryImage,
         status,
       });
     }
@@ -48,28 +63,64 @@ export default function ProductDetails({
 
   return (
     <section className="grid gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
-      <div className="overflow-hidden rounded-2xl border border-black/5 bg-white shadow-sm">
-        <div className="relative aspect-[4/5] w-full overflow-hidden bg-gray-100">
-          <img
-            src={image}
-            alt={title}
-            className={`h-full w-full object-cover transition duration-500 hover:scale-[1.02] ${
-              sold ? "opacity-85" : ""
-            }`}
-          />
-
-          <div className="pointer-events-none absolute left-4 top-4">
-            {sold ? (
-              <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-red-600 shadow-sm backdrop-blur">
-                Sold
-              </span>
+      <div className="space-y-4">
+        <div className="overflow-hidden rounded-2xl border border-black/5 bg-white shadow-sm">
+          <div className="relative aspect-[4/5] w-full overflow-hidden bg-gray-100">
+            {selectedImage ? (
+              <img
+                src={selectedImage}
+                alt={title}
+                className={`h-full w-full object-cover transition duration-500 hover:scale-[1.02] ${
+                  sold ? "opacity-85" : ""
+                }`}
+              />
             ) : (
-              <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-green-700 shadow-sm backdrop-blur">
-                Available
-              </span>
+              <div className="flex h-full items-center justify-center text-sm text-gray-500">
+                No image available
+              </div>
             )}
+
+            <div className="pointer-events-none absolute left-4 top-4">
+              {sold ? (
+                <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-red-600 shadow-sm backdrop-blur">
+                  Sold
+                </span>
+              ) : (
+                <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-green-700 shadow-sm backdrop-blur">
+                  Available
+                </span>
+              )}
+            </div>
           </div>
         </div>
+
+        {imageList.length > 1 && (
+          <div className="flex flex-wrap gap-3">
+            {imageList.map((img, index) => {
+              const isActive = selectedImage === img;
+
+              return (
+                <button
+                  key={`${img}-${index}`}
+                  type="button"
+                  onClick={() => setSelectedImage(img)}
+                  className={`overflow-hidden rounded-xl border bg-white transition ${
+                    isActive
+                      ? "border-black"
+                      : "border-black/10 hover:border-black/30"
+                  }`}
+                  aria-label={`View image ${index + 1} of ${title}`}
+                >
+                  <img
+                    src={img}
+                    alt={`${title} thumbnail ${index + 1}`}
+                    className="h-19 w-19 object-cover"
+                  />
+                </button>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       <div className="space-y-8">
@@ -132,7 +183,7 @@ export default function ProductDetails({
                 id,
                 title,
                 price,
-                image,
+                image: primaryImage,
                 status,
               })
             }
@@ -161,28 +212,21 @@ export default function ProductDetails({
 
         <div className="space-y-3 border-t border-black/10 pt-6 text-sm text-gray-600">
           <p>
-            Includes vintage wooden frame.
-
-            Signed, titled and ready to hang.
-
-            Please note colours may vary slightly on different screens. Due to the subtlety of the work, hues and contrast may appear different in various lighting.
-
-            Commissions available.
-
-            Priced in Canadian Dollar. Applicable taxes will be applied at checkout.
-
-            All sales a final.
+            Includes vintage wooden frame. Signed, titled and ready to hang.
+            Please note colours may vary slightly on different screens. Due to
+            the subtlety of the work, hues and contrast may appear different in
+            various lighting. Commissions available. Priced in Canadian Dollar.
+            Applicable taxes will be applied at checkout. All sales a final.
           </p>
           <p>
-            Shipping:
-
-            Please allow up to 10 days to ship the painting.
-
-            Pick-up is available in Greater Montreal Area.
-
-            Free shipping in Canada.
-
-            For international shipping please contact me with your mailing address for a shipping quote. For international orders there may be additional import fees charged by your government. This depends upon your country's custom policies. Please review your local importing fees and taxes to avoid any undesired surprises. Buyer is responsible for all custom fees.
+            Shipping: Please allow up to 10 days to ship the painting. Pick-up
+            is available in Greater Montreal Area. Free shipping in Canada. For
+            international shipping please contact me with your mailing address
+            for a shipping quote. For international orders there may be
+            additional import fees charged by your government. This depends upon
+            your country's custom policies. Please review your local importing
+            fees and taxes to avoid any undesired surprises. Buyer is
+            responsible for all custom fees.
           </p>
         </div>
       </div>

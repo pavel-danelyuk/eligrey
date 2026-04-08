@@ -5,20 +5,29 @@ export default function ProductCard({
   title,
   price,
   image,
+  images,
   status,
   collection,
 }) {
   const sold = status === "sold";
+  const previewImage =
+    Array.isArray(images) && images.length > 0 ? images[0] : image;
 
   return (
     <article className="group overflow-hidden rounded-2xl border border-black/5 bg-white/80 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
       <Link href={`/product/${id}`} className="block">
         <div className="relative aspect-square w-full overflow-hidden bg-gray-100">
-          <img
-            src={image}
-            alt={title}
-            className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-          />
+          {previewImage ? (
+            <img
+              src={previewImage}
+              alt={title}
+              className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center text-sm text-gray-500">
+              No image available
+            </div>
+          )}
 
           <div className="pointer-events-none absolute left-3 top-3 flex flex-col gap-2">
             <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-black shadow-sm backdrop-blur">

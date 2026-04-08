@@ -10,6 +10,7 @@ export default function ProductGrid({ artworks }) {
           title={artwork.title}
           price={artwork.price}
           image={artwork.image}
+          images={artwork.images}
           status={artwork.status}
           collection={artwork.collection}
         />

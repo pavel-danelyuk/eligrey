@@ -27,6 +27,7 @@ export default async function ProductPage({ params }) {
         collection={artwork.collection}
         year={artwork.year}
         image={artwork.image}
+        images={artwork.images}
         status={artwork.status}
         description={artwork.description}
         size={artwork.size}
