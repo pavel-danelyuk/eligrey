@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
+import { Resend } from "resend";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request) {
   try {
@@ -42,7 +45,7 @@ export async function POST(request) {
 
     const supabase = createSupabaseServerClient();
 
-    const { error } = await supabase.from("commission_requests").insert([
+    const { error: dbError } = await supabase.from("commission_requests").insert([
       {
         name: name.trim(),
         email: email.trim(),
@@ -52,11 +55,36 @@ export async function POST(request) {
       },
     ]);
 
-    if (error) {
-      console.error("Supabase insert error:", error);
-
+    if (dbError) {
+      console.error("Supabase insert error:", dbError);
       return NextResponse.json(
         { error: "Could not save commission request." },
+        { status: 500 }
+      );
+    }
+
+    const { error: emailError } = await resend.emails.send({
+      from: process.env.COMMISSION_FROM_EMAIL,
+      to: [process.env.COMMISSION_NOTIFICATION_TO],
+      replyTo: email.trim(),
+      subject: `New commission request from ${name.trim()}`,
+      html: `
+        <h2>New Commission Request</h2>
+        <p><strong>Name:</strong> ${escapeHtml(name.trim())}</p>
+        <p><strong>Email:</strong> ${escapeHtml(email.trim())}</p>
+        <p><strong>Preferred Size:</strong> ${escapeHtml(preferredSize.trim())}</p>
+        <p><strong>Budget:</strong> ${escapeHtml(budget.trim())}</p>
+        <p><strong>Project Idea:</strong></p>
+        <p>${escapeHtml(projectIdea.trim()).replace(/\n/g, "<br />")}</p>
+      `,
+    });
+
+    if (emailError) {
+      console.error("Resend email error:", emailError);
+      return NextResponse.json(
+        {
+          error: "Request was saved, but email notification could not be sent.",
+        },
         { status: 500 }
       );
     }
@@ -73,4 +101,13 @@ export async function POST(request) {
       { status: 500 }
     );
   }
+}
+
+function escapeHtml(value) {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
