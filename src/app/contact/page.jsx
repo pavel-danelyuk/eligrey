@@ -16,7 +16,9 @@ export default function ContactPage() {
           </p>
         </div>
 
-        <ContactForm />
+        <div className="rounded-2xl border border-black/5 bg-white p-6 shadow-sm">
+          <ContactForm />
+        </div>
       </div>
     </PageContainer>
   );
