@@ -127,7 +127,7 @@ export default function CommissionForm() {
           <input
             type="text"
             name="preferredSize"
-            placeholder="Example: 16x20 inches"
+            placeholder="Example: 30x30 inches"
             value={formData.preferredSize}
             onChange={handleChange}
             className={`w-full rounded-md bg-white px-3 py-2 transition outline-none focus:ring-2 focus:ring-black/20 ${
