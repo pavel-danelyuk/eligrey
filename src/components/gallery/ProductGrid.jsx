@@ -5,12 +5,11 @@ export default function ProductGrid({ artworks }) {
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {artworks.map((artwork) => (
         <ProductCard
-          key={artwork.id}
-          id={artwork.id}
+          key={artwork._id}
+          slug={artwork.slug}
           title={artwork.title}
           price={artwork.price}
-          image={artwork.image}
-          images={artwork.images}
+          mainImage={artwork.mainImage}
           status={artwork.status}
           collection={artwork.collection}
         />

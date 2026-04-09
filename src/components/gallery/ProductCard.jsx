@@ -1,27 +1,30 @@
 import Link from "next/link";
+import Image from "next/image";
+import { urlFor } from "@/lib/sanity/image";
 
 export default function ProductCard({
-  id,
+  slug,
   title,
   price,
-  image,
-  images,
+  mainImage,
   status,
   collection,
 }) {
   const sold = status === "sold";
-  const previewImage =
-    Array.isArray(images) && images.length > 0 ? images[0] : image;
+  const reserved = status === "reserved"; 
+  const imageUrl = mainImage ? urlFor(mainImage).width(800).height(800).url() : null;
 
   return (
     <article className="group overflow-hidden rounded-2xl border border-black/5 bg-white/80 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
-      <Link href={`/product/${id}`} className="block">
+      <Link href={`/product/${slug}`} className="block">
         <div className="relative aspect-square w-full overflow-hidden bg-gray-100">
-          {previewImage ? (
-            <img
-              src={previewImage}
+          {imageUrl ? (
+            <Image
+              src={imageUrl}
               alt={title}
-              className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+              fill
+              className="object-cover transition duration-500 group-hover:scale-105"
+              sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 100vw"
             />
           ) : (
             <div className="flex h-full items-center justify-center text-sm text-gray-500">
@@ -30,13 +33,19 @@ export default function ProductCard({
           )}
 
           <div className="pointer-events-none absolute left-3 top-3 flex flex-col gap-2">
-            <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-black shadow-sm backdrop-blur">
-              {collection}
-            </span>
+            {collection && (
+              <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-black shadow-sm backdrop-blur">
+                {collection}
+              </span>
+            )}
 
             {sold ? (
               <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-red-600 shadow-sm backdrop-blur">
                 Sold
+              </span>
+            ) : reserved ? (
+              <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-amber-600 shadow-sm backdrop-blur">
+                Reserved
               </span>
             ) : (
               <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-green-700 shadow-sm backdrop-blur">
@@ -59,7 +68,7 @@ export default function ProductCard({
           </p>
 
           <Link
-            href={`/product/${id}`}
+            href={`/product/${slug}`}
             className="cursor-pointer rounded-md border border-black px-4 py-2 text-sm font-medium transition hover:bg-black hover:text-white"
           >
             View

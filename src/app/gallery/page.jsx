@@ -1,8 +1,10 @@
 import PageContainer from "@/components/layout/PageContainer";
 import GalleryClient from "@/components/gallery/GalleryClient";
-import { artworks } from "@/data/artworks";
+import { client } from "@/lib/sanity/client";
+import { ALL_ARTWORKS_QUERY } from "@/lib/sanity/queries";
 
-export default function GalleryPage() {
+export default async function GalleryPage() {
+  const artworks = await client.fetch(ALL_ARTWORKS_QUERY);
   return (
     <PageContainer>
       <section className="space-y-6">

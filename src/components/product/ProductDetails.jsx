@@ -1,15 +1,18 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 import { useCart } from "@/context/CartContext";
 import { useRouter } from "next/navigation";
+import { urlFor } from "@/lib/sanity/image";
 
 export default function ProductDetails({
   id,
+  slug,
   title,
   price,
-  image,
-  images,
+  mainImage,
+  galleryImages,
   status,
   description,
   size,
@@ -21,10 +24,24 @@ export default function ProductDetails({
   const router = useRouter();
 
   const imageList = useMemo(() => {
-    if (Array.isArray(images) && images.length > 0) return images;
-    if (image) return [image];
-    return [];
-  }, [images, image]);
+    const images = [];
+
+    if (mainImage) {
+      images.push(urlFor(mainImage).width(1400).height(1750).url());
+    }
+
+    if (Array.isArray(galleryImages) && galleryImages.length > 0) {
+      galleryImages.forEach((img) => {
+        if (!img) return;
+        const url = urlFor(img).width(1400).height(1750).url();
+        if (!images.includes(url)) {
+          images.push(url);
+        }
+      });
+    }
+
+    return images;
+  }, [mainImage, galleryImages]);
 
   const [selectedImage, setSelectedImage] = useState(imageList[0] || "");
 
@@ -33,29 +50,35 @@ export default function ProductDetails({
   }, [imageList]);
 
   const sold = status === "sold";
+  const reserved = status === "reserved";
   const alreadyInCart = isInCart(id);
-  const disableAddToCart = sold || alreadyInCart;
-  const primaryImage = imageList[0] || image || "";
+  const disableAddToCart = sold || reserved || alreadyInCart;
+  const primaryImage = imageList[0] || "";
 
   let buttonText = "Add to Cart";
 
   if (sold) {
     buttonText = "Sold";
+  } else if (reserved) {
+    buttonText = "Reserved";
   } else if (alreadyInCart) {
     buttonText = "Already in Cart";
   }
 
+  const cartItem = {
+    id,
+    slug,
+    title,
+    price,
+    image: primaryImage,
+    status,
+  };
+
   const handleBuyNow = () => {
-    if (sold) return;
+    if (sold || reserved) return;
 
     if (!alreadyInCart) {
-      addToCart({
-        id,
-        title,
-        price,
-        image: primaryImage,
-        status,
-      });
+      addToCart(cartItem);
     }
 
     router.push("/cart");
@@ -64,15 +87,19 @@ export default function ProductDetails({
   return (
     <section className="grid gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
       <div className="space-y-4">
-        <div className="overflow-hidden rounded-2xl border border-black/5 bg-white shadow-sm">
+        <div className="overflow-hidden rounded-3xl border border-black/5 bg-white shadow-sm">
           <div className="relative aspect-[4/5] w-full overflow-hidden bg-gray-100">
             {selectedImage ? (
-              <img
+              <Image
                 src={selectedImage}
                 alt={title}
-                className={`h-full w-full object-cover transition duration-500 hover:scale-[1.02] ${
+                fill
+                className={`object-cover transition duration-700 ${
                   sold ? "opacity-85" : ""
                 }`}
+                sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 100vw"
+                priority
+                loading="eager"
               />
             ) : (
               <div className="flex h-full items-center justify-center text-sm text-gray-500">
@@ -85,6 +112,10 @@ export default function ProductDetails({
                 <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-red-600 shadow-sm backdrop-blur">
                   Sold
                 </span>
+              ) : reserved ? (
+                <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-amber-600 shadow-sm backdrop-blur">
+                  Reserved
+                </span>
               ) : (
                 <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-green-700 shadow-sm backdrop-blur">
                   Available
@@ -95,7 +126,7 @@ export default function ProductDetails({
         </div>
 
         {imageList.length > 1 && (
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-3 pt-1">
             {imageList.map((img, index) => {
               const isActive = selectedImage === img;
 
@@ -104,18 +135,29 @@ export default function ProductDetails({
                   key={`${img}-${index}`}
                   type="button"
                   onClick={() => setSelectedImage(img)}
-                  className={`overflow-hidden rounded-xl border bg-white transition ${
+                  className={`group relative overflow-hidden rounded-2xl bg-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-black/30 ${
                     isActive
-                      ? "border-black"
-                      : "border-black/10 hover:border-black/30"
+                      ? "border-2 border-black shadow-md -translate-y-0.5"
+                      : "border border-black/10 hover:border-black/30 hover:shadow-sm"
                   }`}
                   aria-label={`View image ${index + 1} of ${title}`}
+                  aria-pressed={isActive}
                 >
-                  <img
-                    src={img}
-                    alt={`${title} thumbnail ${index + 1}`}
-                    className="h-19 w-19 object-cover"
-                  />
+                  <div className="relative h-20 w-20 overflow-hidden rounded-[14px]">
+                    <Image
+                      src={img}
+                      alt={`${title} thumbnail ${index + 1}`}
+                      fill
+                      className={`object-cover transition duration-300 ${
+                        isActive ? "scale-[1.02]" : "group-hover:scale-105"
+                      }`}
+                      sizes="80px"
+                    />
+                  </div>
+
+                  {isActive && (
+                    <span className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-black/10" />
+                  )}
                 </button>
               );
             })}
@@ -178,15 +220,7 @@ export default function ProductDetails({
           <button
             type="button"
             disabled={disableAddToCart}
-            onClick={() =>
-              addToCart({
-                id,
-                title,
-                price,
-                image: primaryImage,
-                status,
-              })
-            }
+            onClick={() => addToCart(cartItem)}
             className={`rounded-md px-6 py-3 text-sm font-medium transition ${
               disableAddToCart
                 ? "cursor-not-allowed bg-gray-300 text-gray-600"
@@ -196,18 +230,15 @@ export default function ProductDetails({
             {buttonText}
           </button>
 
-          <button
-            type="button"
-            disabled={sold}
-            onClick={handleBuyNow}
-            className={`rounded-md border px-6 py-3 text-sm font-medium transition ${
-              sold
-                ? "cursor-not-allowed border-gray-300 text-gray-400"
-                : "cursor-pointer border-black hover:bg-black hover:text-white"
-            }`}
-          >
-            {sold ? "Unavailable" : "Buy Now"}
-          </button>
+          {!sold && !reserved && (
+            <button
+              type="button"
+              onClick={handleBuyNow}
+              className="cursor-pointer rounded-md border border-black px-6 py-3 text-sm font-medium transition hover:bg-black hover:text-white"
+            >
+              Buy Now
+            </button>
+          )}
         </div>
 
         <div className="space-y-3 border-t border-black/10 pt-6 text-sm text-gray-600">
