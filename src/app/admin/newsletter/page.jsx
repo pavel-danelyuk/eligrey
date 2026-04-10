@@ -13,7 +13,7 @@ export default async function AdminNewsletterPage() {
     <PageContainer>
       <div className="space-y-8">
         <div className="space-y-2">
-          <h1 className="text-3xl font-bold">Newsletter Subscribers</h1>
+          <h1 className="text-4xl md:text-5xl font-semibold leading-[1.05] tracking-tight">Newsletter Subscribers</h1>
           <p className="text-gray-600">
             View newsletter signups from the website.
           </p>

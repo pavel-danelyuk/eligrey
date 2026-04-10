@@ -1,9 +1,10 @@
 import ProductGrid from "@/components/gallery/ProductGrid";
-import { artworks } from "@/data/artworks";
 import Link from "next/link";
+import { client } from "@/lib/sanity/client";
+import { FEATURED_ARTWORKS_QUERY } from "@/lib/sanity/queries";
 
-export default function FeaturedArtworks() {
-  const featured = artworks.filter((artwork) => artwork.featured);
+export default async function FeaturedArtworks() {
+  const featured = await client.fetch(FEATURED_ARTWORKS_QUERY);
 
   return (
     <section className="mx-auto max-w-6xl px-4 py-16">
@@ -12,7 +13,7 @@ export default function FeaturedArtworks() {
           <p className="mb-2 text-sm uppercase tracking-[0.2em] text-gray-500">
             Featured Collection
           </p>
-          <h2 className="text-2xl font-bold md:text-3xl">Featured Artworks</h2>
+          <h2 className="text-2xl font-normal md:text-3xl">Featured Artworks</h2>
         </div>
 
         <Link

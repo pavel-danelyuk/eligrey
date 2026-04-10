@@ -15,7 +15,7 @@ export default function CommissionsPage() {
             />
           </div>
 
-          <h1 className="text-3xl font-bold">Commissions</h1>
+          <h1 className="text-4xl md:text-5xl font-normal leading-[1.05] tracking-tight">Commissions</h1>
 
           <p className="text-gray-700">
             I am currently accepting a limited number of commissions for unique
@@ -67,7 +67,7 @@ export default function CommissionsPage() {
           </div>
 
           {/* Typical process moved here */}
-          <div className="space-y-2 rounded-xl border p-4 text-sm text-gray-700 bg-white/60">
+          <div className="space-y-2 rounded-xl border border-black/9 p-4 text-sm text-gray-700 bg-white/60">
             <p>
               <span className="font-medium text-black">Typical process:</span>
             </p>

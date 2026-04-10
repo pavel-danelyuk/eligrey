@@ -172,7 +172,7 @@ export default function ProductDetails({
           </p>
 
           <div className="space-y-3">
-            <h1 className="text-4xl font-bold leading-[1.05] md:text-5xl">
+            <h1 className="text-4xl md:text-5xl font-normal leading-[1.05] tracking-tight">
               {title}
             </h1>
 

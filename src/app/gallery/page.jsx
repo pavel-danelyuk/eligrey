@@ -13,7 +13,7 @@ export default async function GalleryPage() {
             Gallery
           </p>
 
-          <h1 className="text-4xl font-bold leading-[1.05] md:text-5xl">
+          <h1 className="text-4xl md:text-5xl font-normal leading-[1.05] tracking-tight">
             Explore original works
           </h1>
 

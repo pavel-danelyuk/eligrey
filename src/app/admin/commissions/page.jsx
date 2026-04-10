@@ -13,7 +13,7 @@ export default async function AdminCommissionsPage() {
     <PageContainer>
       <div className="space-y-8">
         <div className="space-y-2">
-          <h1 className="text-3xl font-bold">Commission Submissions</h1>
+          <h1 className="text-4xl md:text-5xl font-semibold leading-[1.05] tracking-tight">Commission Submissions</h1>
           <p className="text-gray-600">
             View incoming commission requests from the website.
           </p>

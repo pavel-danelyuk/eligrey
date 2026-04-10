@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function HeroSection() {
   return (
-    <section className="border-b bg-white">
+    <section className="border-b border-black/9 bg-white">
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 md:grid-cols-2 md:items-center md:py-24">
         <div className="space-y-6">
           <p className="text-sm uppercase tracking-[0.2em] text-gray-500">
@@ -10,7 +10,7 @@ export default function HeroSection() {
           </p>
 
           <div className="space-y-4">
-            <h1 className="max-w-xl text-4xl leading-tight md:text-5xl">
+            <h1 className="text-4xl md:text-5xl font-normal leading-[1.05] tracking-tight">
               Original paintings inspired by nature, place, and atmosphere
             </h1>
 
