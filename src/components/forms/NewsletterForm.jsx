@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Button from "@/components/ui/Button";
 
 export default function NewsletterForm() {
   const [formData, setFormData] = useState({
@@ -149,17 +150,16 @@ export default function NewsletterForm() {
           )}
         </div>
 
-        <button
+        <Button
           type="submit"
+          variant="primary"
           disabled={isSubmitting}
-          className={`rounded-md px-6 py-3 text-sm font-medium text-white transition ${
-            isSubmitting
-              ? "cursor-not-allowed bg-gray-400"
-              : "cursor-pointer bg-black hover:opacity-90"
+          className={`min-w-[140px] ${
+            isSubmitting ? "cursor-not-allowed opacity-60 hover:translate-y-0 hover:shadow-none hover:bg-black hover:text-white" : ""
           }`}
         >
           {isSubmitting ? "Subscribing..." : "Subscribe"}
-        </button>
+        </Button>
       </form>
     </div>
   );

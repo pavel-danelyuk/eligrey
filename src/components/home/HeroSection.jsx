@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Button from "@/components/ui/Button";
 
 export default function HeroSection() {
   return (
@@ -21,19 +22,13 @@ export default function HeroSection() {
           </div>
 
           <div className="flex flex-wrap gap-4">
-            <Link
-              href="/gallery"
-              className="rounded-md bg-black px-6 py-3 text-sm font-medium text-white transition hover:opacity-90"
-            >
+            <Button href='/gallery' variant="primary">
               View Gallery
-            </Link>
+            </Button>
 
-            <Link
-              href="/commissions"
-              className="rounded-md border px-6 py-3 text-sm font-medium transition hover:bg-gray-100"
-            >
-              Request a Commission
-            </Link>
+            <Button href='/commisions' variant="primary">
+              Request a commission
+            </Button>
           </div>
 
           <div className="flex flex-wrap gap-6 pt-2 text-sm text-gray-600">

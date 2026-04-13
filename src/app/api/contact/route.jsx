@@ -35,7 +35,7 @@ function isRateLimited(ip) {
   return false;
 }
 
-function escapeHtml(value) {
+function escapeHtml(value = "") {
   return value
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
@@ -56,7 +56,14 @@ export async function POST(request) {
     }
 
     const body = await request.json();
-    const { name, email, message, company } = body;
+    const {
+      name,
+      email,
+      message,
+      company,
+      artworkSlug = "",
+      artworkTitle = "",
+    } = body;
 
     if (company) {
       return NextResponse.json(
@@ -88,15 +95,31 @@ export async function POST(request) {
       );
     }
 
+    const cleanName = name.trim();
+    const cleanEmail = email.trim();
+    const cleanMessage = message.trim();
+    const cleanArtworkSlug = artworkSlug.trim();
+    const cleanArtworkTitle = artworkTitle.trim();
+
     const supabase = createSupabaseServerClient();
 
-    const { error: dbError } = await supabase.from("contact_messages").insert([
-      {
-        name: name.trim(),
-        email: email.trim(),
-        message: message.trim(),
-      },
-    ]);
+    const insertPayload = {
+      name: cleanName,
+      email: cleanEmail,
+      message: cleanMessage,
+    };
+
+    if (cleanArtworkSlug) {
+      insertPayload.artwork_slug = cleanArtworkSlug;
+    }
+
+    if (cleanArtworkTitle) {
+      insertPayload.artwork_title = cleanArtworkTitle;
+    }
+
+    const { error: dbError } = await supabase
+      .from("contact_messages")
+      .insert([insertPayload]);
 
     if (dbError) {
       console.error("Supabase insert error:", dbError);
@@ -106,17 +129,31 @@ export async function POST(request) {
       );
     }
 
+    const artworkLine = cleanArtworkTitle
+      ? `<p><strong>Artwork:</strong> ${escapeHtml(cleanArtworkTitle)}</p>`
+      : cleanArtworkSlug
+      ? `<p><strong>Artwork Slug:</strong> ${escapeHtml(cleanArtworkSlug)}</p>`
+      : "";
+
+    const subject = cleanArtworkTitle
+      ? `Artwork inquiry: ${cleanArtworkTitle} — ${cleanName}`
+      : `New contact message from ${cleanName}`;
+
     const { error: emailError } = await resend.emails.send({
       from: process.env.CONTACT_FROM_EMAIL || process.env.COMMISSION_FROM_EMAIL,
-      to: [process.env.CONTACT_NOTIFICATION_TO || process.env.COMMISSION_NOTIFICATION_TO],
-      replyTo: email.trim(),
-      subject: `New contact message from ${name.trim()}`,
+      to: [
+        process.env.CONTACT_NOTIFICATION_TO ||
+          process.env.COMMISSION_NOTIFICATION_TO,
+      ],
+      replyTo: cleanEmail,
+      subject,
       html: `
         <h2>New Contact Message</h2>
-        <p><strong>Name:</strong> ${escapeHtml(name.trim())}</p>
-        <p><strong>Email:</strong> ${escapeHtml(email.trim())}</p>
+        ${artworkLine}
+        <p><strong>Name:</strong> ${escapeHtml(cleanName)}</p>
+        <p><strong>Email:</strong> ${escapeHtml(cleanEmail)}</p>
         <p><strong>Message:</strong></p>
-        <p>${escapeHtml(message.trim()).replace(/\n/g, "<br />")}</p>
+        <p>${escapeHtml(cleanMessage).replace(/\n/g, "<br />")}</p>
       `,
     });
 

@@ -1,12 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Button from "@/components/ui/Button";
 
-export default function ContactForm() {
+export default function ContactForm({
+  artworkSlug = "",
+  artworkTitle = "",
+}) {
+  const initialMessage = artworkTitle
+    ? `Hello, I'm interested in "${artworkTitle}". I would like to know more about its availability and details.`
+    : "";
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    message: "",
+    message: initialMessage,
     company: "", // honeypot
   });
 
@@ -14,6 +22,15 @@ export default function ContactForm() {
   const [submitError, setSubmitError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    if (artworkTitle) {
+      setFormData((prev) => ({
+        ...prev,
+        message: `Hello, I'm interested in "${artworkTitle}". I would like to know more about its availability and details.`,
+      }));
+    }
+  }, [artworkTitle]);
 
   const validate = () => {
     const newErrors = {};
@@ -68,7 +85,11 @@ export default function ContactForm() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          artworkSlug,
+          artworkTitle,
+        }),
       });
 
       const data = await response.json();
@@ -82,7 +103,9 @@ export default function ContactForm() {
       setFormData({
         name: "",
         email: "",
-        message: "",
+        message: artworkTitle
+          ? `Hello, I'm interested in "${artworkTitle}". I would like to know more about its availability and details.`
+          : "",
         company: "",
       });
       setErrors({});
@@ -96,30 +119,49 @@ export default function ContactForm() {
   if (submitted) {
     return (
       <div className="rounded-2xl border border-green-200 bg-green-50 p-6">
-        <h2 className="text-xl font-semibold text-green-900">Message sent</h2>
+        <h2 className="text-xl font-semibold text-green-900">
+          Inquiry sent
+        </h2>
+
         <p className="mt-2 text-sm leading-6 text-green-800">
-          Thank you for reaching out. Your message has been sent successfully.
+          Thank you for your message. Your inquiry has been sent successfully.
         </p>
+
+        {artworkTitle && (
+          <p className="mt-2 text-sm leading-6 text-green-800">
+            We’ve received your interest in{" "}
+            <span className="font-medium">{artworkTitle}</span>.
+          </p>
+        )}
+
         <p className="mt-2 text-sm leading-6 text-green-800">
           You’ll receive a reply by email as soon as possible.
         </p>
 
-        <button
+        <Button
           type="button"
+          variant="secondary"
           onClick={() => {
             setSubmitted(false);
             setSubmitError("");
           }}
-          className="mt-5 rounded-md border border-green-900 px-4 py-2 text-sm font-medium text-green-900 transition hover:bg-green-100"
+          className="mt-5"
         >
           Send another message
-        </button>
+        </Button>
       </div>
     );
   }
 
   return (
     <div>
+      {artworkTitle && (
+        <div className="mb-4 rounded-xl border border-black/10 bg-gray-50 p-4 text-sm text-gray-700">
+          Inquiry about:{" "}
+          <span className="font-medium text-black">{artworkTitle}</span>
+        </div>
+      )}
+
       {submitError && (
         <div className="mb-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
           {submitError}
@@ -194,20 +236,21 @@ export default function ContactForm() {
         </div>
 
         <div className="space-y-3 pt-2">
-          <button
+          <Button
             type="submit"
+            variant="primary"
             disabled={isSubmitting}
-            className={`w-full rounded-md px-5 py-3 text-sm font-medium text-white transition ${
+            className={`w-full ${
               isSubmitting
-                ? "cursor-not-allowed bg-gray-400"
-                : "cursor-pointer bg-black hover:opacity-90"
+                ? "cursor-not-allowed opacity-60 hover:translate-y-0 hover:shadow-none hover:bg-black hover:text-white"
+                : ""
             }`}
           >
-            {isSubmitting ? "Sending..." : "Send Message"}
-          </button>
+            {isSubmitting ? "Sending..." : "Send Inquiry"}
+          </Button>
 
           <p className="text-xs leading-5 text-gray-500">
-            You’ll receive a reply by email as soon as possible.
+            You'll receive a reply by email as soon as possible.
           </p>
         </div>
       </form>

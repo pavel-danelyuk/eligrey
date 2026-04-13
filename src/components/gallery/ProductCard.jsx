@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import Button from "@/components/ui/Button";
 import { urlFor } from "@/lib/sanity/image";
 
 export default function ProductCard({
@@ -11,8 +12,25 @@ export default function ProductCard({
   collection,
 }) {
   const sold = status === "sold";
-  const reserved = status === "reserved"; 
-  const imageUrl = mainImage ? urlFor(mainImage).width(800).height(800).url() : null;
+  const reserved = status === "reserved";
+
+  const imageUrl = mainImage
+    ? urlFor(mainImage).width(800).height(800).url()
+    : null;
+
+  const statusBadge = sold ? (
+    <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-red-600 shadow-sm backdrop-blur">
+      Sold
+    </span>
+  ) : reserved ? (
+    <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-amber-600 shadow-sm backdrop-blur">
+      Reserved
+    </span>
+  ) : (
+    <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-green-700 shadow-sm backdrop-blur">
+      Available
+    </span>
+  );
 
   return (
     <article className="group overflow-hidden rounded-2xl border border-black/5 bg-white/80 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)]">
@@ -39,19 +57,7 @@ export default function ProductCard({
               </span>
             )}
 
-            {sold ? (
-              <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-red-600 shadow-sm backdrop-blur">
-                Sold
-              </span>
-            ) : reserved ? (
-              <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-amber-600 shadow-sm backdrop-blur">
-                Reserved
-              </span>
-            ) : (
-              <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-green-700 shadow-sm backdrop-blur">
-                Available
-              </span>
-            )}
+            {statusBadge}
           </div>
         </div>
       </Link>
@@ -59,7 +65,10 @@ export default function ProductCard({
       <div className="space-y-4 p-5">
         <div className="min-h-[72px] space-y-1.5">
           <h3 className="text-lg font-semibold leading-snug">{title}</h3>
-          <p className="text-sm text-gray-600">${price}</p>
+
+          <p className="text-sm font-medium text-gray-800">
+            ${price.toFixed(2)}
+          </p>
         </div>
 
         <div className="flex items-center justify-between gap-3">
@@ -67,12 +76,9 @@ export default function ProductCard({
             Original Artwork
           </p>
 
-          <Link
-            href={`/product/${slug}`}
-            className="cursor-pointer rounded-md border border-black px-4 py-2 text-sm font-medium transition hover:bg-black hover:text-white"
-          >
+          <Button href={`/product/${slug}`} variant="secondary">
             View
-          </Link>
+          </Button>
         </div>
       </div>
     </article>

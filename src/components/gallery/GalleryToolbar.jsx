@@ -1,5 +1,7 @@
 "use client";
 
+import Button from "@/components/ui/Button";
+
 export default function GalleryToolbar({
   collection,
   setCollection,
@@ -63,13 +65,14 @@ export default function GalleryToolbar({
         </div>
 
         <div className="flex items-end">
-          <button
+          <Button
             type="button"
+            variant="secondary"
             onClick={onReset}
-            className="w-full cursor-pointer rounded-md border border-black px-4 py-2 text-sm font-medium transition hover:bg-black hover:text-white"
+            className="w-full"
           >
             Reset Filters
-          </button>
+          </Button>
         </div>
       </div>
     </div>

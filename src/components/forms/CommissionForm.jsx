@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Button from "@/components/ui/Button";
 
 export default function CommissionForm() {
   const [formData, setFormData] = useState({
@@ -20,27 +21,18 @@ export default function CommissionForm() {
   const validate = () => {
     const newErrors = {};
 
-    if (!formData.name.trim()) {
-      newErrors.name = "Name is required.";
-    }
-
+    if (!formData.name.trim()) newErrors.name = "Name is required.";
     if (!formData.email.trim()) {
       newErrors.email = "Email is required.";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "Enter a valid email address.";
     }
-
-    if (!formData.preferredSize.trim()) {
+    if (!formData.preferredSize.trim())
       newErrors.preferredSize = "Preferred size is required.";
-    }
-
-    if (!formData.budget.trim()) {
+    if (!formData.budget.trim())
       newErrors.budget = "Budget is required.";
-    }
-
-    if (!formData.projectIdea.trim()) {
+    if (!formData.projectIdea.trim())
       newErrors.projectIdea = "Project idea is required.";
-    }
 
     return newErrors;
   };
@@ -93,13 +85,14 @@ export default function CommissionForm() {
       setFormData({
         name: "",
         email: "",
+        company: "",
         preferredSize: "",
         budget: "",
         projectIdea: "",
       });
 
       setErrors({});
-    } catch (error) {
+    } catch {
       setSubmitError("Unable to submit the form. Please try again.");
     } finally {
       setIsSubmitting(false);
@@ -112,24 +105,27 @@ export default function CommissionForm() {
         <h2 className="text-xl font-semibold text-green-900">
           Request received
         </h2>
+
         <p className="mt-2 text-sm leading-6 text-green-800">
           Thank you for your interest in a commissioned piece. Your request has
           been submitted successfully.
         </p>
+
         <p className="mt-2 text-sm leading-6 text-green-800">
-          You’ll be contacted by email after your request is reviewed.
+          You'll be contacted by email after your request is reviewed.
         </p>
 
-        <button
+        <Button
           type="button"
+          variant="secondary"
           onClick={() => {
             setSubmitted(false);
             setSubmitError("");
           }}
-          className="mt-5 rounded-md border border-green-900 px-4 py-2 text-sm font-medium text-green-900 transition hover:bg-green-100"
+          className="mt-5"
         >
           Submit another request
-        </button>
+        </Button>
       </div>
     );
   }
@@ -189,7 +185,9 @@ export default function CommissionForm() {
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium">Preferred Size</label>
+          <label className="mb-1 block text-sm font-medium">
+            Preferred Size
+          </label>
           <input
             type="text"
             name="preferredSize"
@@ -229,7 +227,9 @@ export default function CommissionForm() {
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium">Project Idea</label>
+          <label className="mb-1 block text-sm font-medium">
+            Project Idea
+          </label>
           <textarea
             rows="6"
             name="projectIdea"
@@ -250,17 +250,18 @@ export default function CommissionForm() {
         </div>
 
         <div className="space-y-3 pt-2">
-          <button
+          <Button
             type="submit"
+            variant="primary"
             disabled={isSubmitting}
-            className={`w-full rounded-md px-5 py-3 text-sm font-medium text-white transition ${
+            className={`w-full ${
               isSubmitting
-                ? "cursor-not-allowed bg-gray-400"
-                : "cursor-pointer bg-black hover:opacity-90"
+                ? "cursor-not-allowed opacity-60 hover:translate-y-0 hover:shadow-none hover:bg-black hover:text-white"
+                : ""
             }`}
           >
             {isSubmitting ? "Sending request..." : "Submit Request"}
-          </button>
+          </Button>
 
           <p className="text-xs leading-5 text-gray-500">
             You’ll be contacted by email after your request is reviewed.
